@@ -11,6 +11,7 @@
       style="border:1px solid black"
     ></canvas>
 
+    <p>Score: {{ score }}</p>
     <p>Press SPACE to jump</p>
 
     <p v-if="gameOver">Game Over</p>
@@ -44,7 +45,6 @@ let score = ref(0)
 let gameOver = ref(false)
 
 function restart() {
-
   dinosaur.y = 120
   dinosaur.vy = 0
   dinosaur.jumping = false
@@ -61,7 +61,8 @@ function spawnObstacle() {
     x: 400,
     y: 140,
     width: 20,
-    height: 40
+    height: 40,
+    passed: false
   })
 }
 
@@ -77,7 +78,6 @@ function update() {
   if (gameOver.value) return
 
   frame++
-  score.value++
 
   if (frame % 120 === 0) {
     spawnObstacle()
@@ -94,6 +94,11 @@ function update() {
 
   obstacles.forEach(o => {
     o.x -= 4
+
+    if (!o.passed && o.x + o.width < dinosaur.x) {
+      o.passed = true
+      score.value += 1
+    }
   })
 
   obstacles = obstacles.filter(o => o.x > -20)
@@ -135,8 +140,6 @@ function draw() {
   obstacles.forEach(o => {
     ctx.fillRect(o.x, o.y, o.width, o.height)
   })
-
-  ctx.fillText("Score: " + score.value, 10, 20)
 
   if (gameOver.value) {
     ctx.fillText("GAME OVER", 150, 100)
