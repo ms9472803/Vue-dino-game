@@ -32,7 +32,51 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Verify GitHub Pages is enabled
+        if: ${{ secrets.GH_PAGES_TOKEN == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_API_URL: ${{ github.api_url }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          from urllib import error, request
+
+          url = f"{os.environ['GH_API_URL']}/repos/{os.environ['GH_REPOSITORY']}/pages"
+          req = request.Request(
+              url,
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+          )
+
+          try:
+              with request.urlopen(req) as response:
+                  json.load(response)
+          except error.HTTPError as exc:
+              if exc.code == 404:
+                  sys.stderr.write(
+                      "GitHub Pages is not enabled for this repository yet.\n"
+                      "Go to Settings > Pages and set Source to GitHub Actions, then rerun this workflow.\n"
+                      "To auto-enable Pages from the workflow, add a GH_PAGES_TOKEN secret with the required admin permissions.\n"
+                  )
+              raise
+          PY
+
       - name: Configure GitHub Pages
+        if: ${{ secrets.GH_PAGES_TOKEN != '' }}
+        uses: actions/configure-pages@v5
+        with:
+          token: ${{ secrets.GH_PAGES_TOKEN }}
+          enablement: true
+
+      - name: Configure GitHub Pages
+        if: ${{ secrets.GH_PAGES_TOKEN == '' }}
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
@@ -42,7 +86,7 @@ jobs:
         run: yarn build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
