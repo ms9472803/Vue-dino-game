@@ -63,7 +63,7 @@ After this one-time setup, deployments are started manually from the `Deploy to 
 3. Enter `release_version` such as `0.0.1`
 4. Run the workflow to deploy the current `main` commit
 
-Each manual deployment also creates a GitHub Release tagged as `v<release_version>`.
+Each manual deployment also creates a GitHub tag and GitHub Release named exactly as `<release_version>`.
 
 ### Optional automatic enablement
 

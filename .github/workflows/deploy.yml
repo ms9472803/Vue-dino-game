@@ -133,7 +133,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_VERSION: ${{ inputs.release_version }}
         run: |
-          tag="v$RELEASE_VERSION"
+          tag="$RELEASE_VERSION"
 
           if git rev-parse "$tag" >/dev/null 2>&1; then
             echo "Tag $tag already exists"
