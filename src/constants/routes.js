@@ -1,5 +1,5 @@
 export const ROUTE_PATHS = {
   HOME: '/',
   GAME: '/game',
-  SETTINGS: '/b'
+  SETTINGS: '/settings'
 }
