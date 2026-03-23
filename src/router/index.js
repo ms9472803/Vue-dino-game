@@ -2,11 +2,12 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../components/Home.vue'
 import GamePage from '../components/GamePage.vue'
 import PageB from '../components/PageB.vue'
+import { ROUTE_PATHS } from '../constants/routes'
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/game', component: GamePage },
-  { path: '/b', component: PageB }
+  { path: ROUTE_PATHS.HOME, component: Home },
+  { path: ROUTE_PATHS.GAME, component: GamePage },
+  { path: ROUTE_PATHS.SETTINGS, component: PageB }
 ]
 
 

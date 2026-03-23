@@ -9,15 +9,16 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ROUTE_PATHS } from '../constants/routes'
 
 const router = useRouter()
 
 function goA() {
-  router.push('/game')
+  router.push(ROUTE_PATHS.GAME)
 }
 
 function goB() {
-  router.push('/b')
+  router.push(ROUTE_PATHS.SETTINGS)
 }
 </script>
 
