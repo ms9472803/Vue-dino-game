@@ -19,15 +19,32 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue"
 import { useRouter } from 'vue-router'
 
-const canvasRef = ref(null)
+interface Dinosaur {
+  x: number
+  y: number
+  width: number
+  height: number
+  vy: number
+  jumping: boolean
+}
+
+interface Obstacle {
+  x: number
+  y: number
+  width: number
+  height: number
+  passed: boolean
+}
+
+const canvasRef = ref<HTMLCanvasElement | null>(null)
 const router = useRouter()
 
-let ctx
-let dinosaur = {
+let ctx: CanvasRenderingContext2D
+let dinosaur: Dinosaur = {
   x: 50,
   y: 120,
   width: 40,
@@ -39,13 +56,13 @@ let dinosaur = {
 let gravity = 0.6
 let ground = 160
 
-let obstacles = []
+let obstacles: Obstacle[] = []
 let frame = 0
 let score = ref(0)
 let gameOver = ref(false)
-let animationId = null
+let animationId: number | null = null
 
-function handleKeydown(e) {
+function handleKeydown(e: KeyboardEvent): void {
 
   if (gameOver.value) {
     restart()
@@ -57,7 +74,7 @@ function handleKeydown(e) {
   }
 }
 
-function restart() {
+function restart(): void {
   dinosaur.y = 120
   dinosaur.vy = 0
   dinosaur.jumping = false
@@ -69,7 +86,7 @@ function restart() {
   gameOver.value = false
 }
 
-function spawnObstacle() {
+function spawnObstacle(): void {
   obstacles.push({
     x: 400,
     y: 140,
@@ -79,14 +96,14 @@ function spawnObstacle() {
   })
 }
 
-function jump() {
+function jump(): void {
   if (!dinosaur.jumping) {
     dinosaur.vy = -12
     dinosaur.jumping = true
   }
 }
 
-function update() {
+function update(): void {
 
   if (gameOver.value) return
 
@@ -119,7 +136,7 @@ function update() {
   checkCollision()
 }
 
-function checkCollision() {
+function checkCollision(): void {
   obstacles.forEach(o => {
     if (
       dinosaur.x < o.x + o.width &&
@@ -132,7 +149,7 @@ function checkCollision() {
   })
 }
 
-function draw() {
+function draw(): void {
 
   ctx.clearRect(0, 0, 400, 200)
 
@@ -159,20 +176,20 @@ function draw() {
   }
 }
 
-function gameLoop() {
+function gameLoop(): void {
   update()
   draw()
   animationId = requestAnimationFrame(gameLoop)
 }
 
-function goBack() {
+function goBack(): void {
   router.back()
 }
 
 onMounted(() => {
 
-  const canvas = canvasRef.value
-  ctx = canvas.getContext("2d")
+  const canvas = canvasRef.value!
+  ctx = canvas.getContext("2d")!
 
   window.addEventListener("keydown", handleKeydown)
 

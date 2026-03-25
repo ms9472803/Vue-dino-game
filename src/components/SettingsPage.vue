@@ -42,23 +42,32 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+type Difficulty = 'easy' | 'normal' | 'hard'
+type StatusType = 'success' | 'error' | ''
+
+interface Settings {
+  playerName: string
+  difficulty: Difficulty
+  soundEnabled: boolean
+}
+
 const router = useRouter()
 const storageKey = 'dino-game-settings'
-const defaultSettings = {
+const defaultSettings: Settings = {
   playerName: '',
   difficulty: 'normal',
   soundEnabled: true
 }
 
-const settings = reactive(loadSettings())
-const statusMessage = ref('尚未儲存變更')
-const statusType = ref('')
+const settings = reactive<Settings>(loadSettings())
+const statusMessage = ref<string>('尚未儲存變更')
+const statusType = ref<StatusType>('')
 
-function loadSettings() {
+function loadSettings(): Settings {
   try {
     const savedValue = localStorage.getItem(storageKey)
 
@@ -68,14 +77,14 @@ function loadSettings() {
 
     return {
       ...defaultSettings,
-      ...JSON.parse(savedValue)
+      ...JSON.parse(savedValue) as Partial<Settings>
     }
   } catch {
     return { ...defaultSettings }
   }
 }
 
-function saveSettings() {
+function saveSettings(): void {
   try {
     localStorage.setItem(storageKey, JSON.stringify({ ...settings }))
     statusMessage.value = '設定已儲存'
@@ -86,14 +95,14 @@ function saveSettings() {
   }
 }
 
-function resetSettings() {
+function resetSettings(): void {
   Object.assign(settings, defaultSettings)
   localStorage.removeItem(storageKey)
   statusMessage.value = '已還原為預設設定'
   statusType.value = 'success'
 }
 
-function goBack() {
+function goBack(): void {
   router.back()
 }
 </script>

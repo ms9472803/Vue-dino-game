@@ -7,7 +7,7 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ROUTE_PATHS } from '../constants/routes'
 
