@@ -23,13 +23,6 @@
         </select>
       </label>
 
-      <label class="toggle-row">
-        <div>
-          <span class="toggle-title">音效</span>
-        </div>
-        <input v-model="settings.soundEnabled" type="checkbox" />
-      </label>
-
       <div class="actions">
         <button type="submit">儲存設定</button>
         <button type="button" class="secondary-button" @click="resetSettings">重設為預設值</button>
@@ -52,15 +45,13 @@ type StatusType = 'success' | 'error' | ''
 interface Settings {
   playerName: string
   difficulty: Difficulty
-  soundEnabled: boolean
 }
 
 const router = useRouter()
 const storageKey = 'dino-game-settings'
 const defaultSettings: Settings = {
   playerName: '',
-  difficulty: 'normal',
-  soundEnabled: true
+  difficulty: 'normal'
 }
 
 const settings = reactive<Settings>(loadSettings())
