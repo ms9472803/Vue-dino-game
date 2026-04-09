@@ -61,6 +61,7 @@ let frame = 0
 let score = ref(0)
 let gameOver = ref(false)
 let animationId: number | null = null
+let obstacleSpeed = 4
 
 function handleKeydown(e: KeyboardEvent): void {
 
@@ -123,7 +124,7 @@ function update(): void {
   }
 
   obstacles.forEach(o => {
-    o.x -= 4
+    o.x -= obstacleSpeed
 
     if (!o.passed && o.x + o.width < dinosaur.x) {
       o.passed = true
