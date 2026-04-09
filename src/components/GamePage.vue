@@ -23,6 +23,8 @@
 import { ref, onMounted, onUnmounted } from "vue"
 import { useRouter } from 'vue-router'
 
+type Difficulty = 'easy' | 'normal' | 'hard'
+
 interface Dinosaur {
   x: number
   y: number
@@ -62,6 +64,34 @@ let score = ref(0)
 let gameOver = ref(false)
 let animationId: number | null = null
 let obstacleSpeed = 4
+
+const storageKey = 'dino-game-settings'
+const defaultDifficulty: Difficulty = 'normal'
+const obstacleSpeedByDifficulty: Record<Difficulty, number> = {
+  easy: 3,
+  normal: 4,
+  hard: 6
+}
+
+function loadDifficulty(): Difficulty {
+  try {
+    const savedValue = localStorage.getItem(storageKey)
+
+    if (!savedValue) {
+      return defaultDifficulty
+    }
+
+    const parsed = JSON.parse(savedValue) as { difficulty?: string }
+
+    if (parsed.difficulty === 'easy' || parsed.difficulty === 'normal' || parsed.difficulty === 'hard') {
+      return parsed.difficulty
+    }
+
+    return defaultDifficulty
+  } catch {
+    return defaultDifficulty
+  }
+}
 
 function handleKeydown(e: KeyboardEvent): void {
 
@@ -191,6 +221,8 @@ onMounted(() => {
 
   const canvas = canvasRef.value!
   ctx = canvas.getContext("2d")!
+  const difficulty = loadDifficulty()
+  obstacleSpeed = obstacleSpeedByDifficulty[difficulty]
 
   window.addEventListener("keydown", handleKeydown)
 
