@@ -10,12 +10,12 @@
 
     <form class="settings-card" @submit.prevent="saveSettings">
       <label class="field">
-        <span>玩家名稱</span>
+        <span>名稱</span>
         <input v-model.trim="settings.playerName" type="text" maxlength="20" placeholder="輸入你的名字" />
       </label>
 
       <label class="field">
-        <span>遊戲難度</span>
+        <span>難度</span>
         <select v-model="settings.difficulty">
           <option value="easy">Easy</option>
           <option value="normal">Normal</option>
