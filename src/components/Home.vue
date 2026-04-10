@@ -1,5 +1,6 @@
 <template>
   <div class="home-page">
+    <img class="welcome-image" :src="welcomeImage" alt="Welcome" />
     <h1>Welcome</h1>
     <button @click="goGamePage">Start</button>
     <button @click="goSettingsPage">Settings</button>
@@ -10,6 +11,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ROUTE_PATHS } from '../constants/routes'
+import welcomeImage from '../assets/logo.svg'
 
 const router = useRouter()
 
@@ -36,6 +38,13 @@ function goSettingsPage() {
 
 .home-page h1 {
   margin: 0 0 1rem;
+}
+
+.welcome-image {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 0.5rem;
+  object-fit: contain;
 }
 
 .home-page button {
