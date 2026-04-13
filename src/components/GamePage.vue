@@ -159,6 +159,10 @@ function update(): void {
     if (!o.passed && o.x + o.width < dinosaur.x) {
       o.passed = true
       score.value += 1
+
+      if (score.value > 0 && score.value % 10 === 0) {
+        obstacleSpeed += 2
+      }
     }
   })
 
