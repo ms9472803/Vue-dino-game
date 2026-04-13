@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <img class="welcome-image" :src="welcomeImage" alt="Welcome" />
-    <h1>Welcome</h1>
+    <h1>Welcome<span v-if="userName">, {{ userName }}</span></h1>
     <button @click="goGamePage">Start</button>
     <button @click="goSettingsPage">Settings</button>
   </div>
@@ -12,8 +12,12 @@
 import { useRouter } from 'vue-router'
 import { ROUTE_PATHS } from '../constants/routes'
 import welcomeImage from '../assets/logo.svg'
+import { onMounted, ref } from 'vue'
 
 const router = useRouter()
+
+const userName = ref("")
+const storageKey = 'dino-game-settings'
 
 function goGamePage() {
   router.push(ROUTE_PATHS.GAME)
@@ -22,6 +26,31 @@ function goGamePage() {
 function goSettingsPage() {
   router.push(ROUTE_PATHS.SETTINGS)
 }
+
+function loadUserName(): string {
+  try {
+    const savedValue = localStorage.getItem(storageKey)
+
+    if (!savedValue) {
+      return ""
+    }
+
+    const parsed = JSON.parse(savedValue) as { playerName?: string }
+
+    if (parsed.playerName) {
+      return parsed.playerName
+    }
+
+    return ""
+  } catch {
+    return ""
+  }
+}
+
+onMounted (() => {
+  userName.value = loadUserName()
+})
+
 </script>
 
 <style scoped>
