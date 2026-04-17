@@ -1,8 +1,9 @@
 <template>
   <div class="home-page">
-    <h1>Root Page</h1>
-    <button @click="goGamePage">Go to Page A</button>
-    <button @click="goSettingsPage">Go to Settings</button>
+    <img class="welcome-image" :src="welcomeImage" alt="Welcome" />
+    <h1>Welcome<span v-if="userName">, {{ userName }}</span></h1>
+    <button @click="goGamePage">Start</button>
+    <button @click="goSettingsPage">Settings</button>
   </div>
 </template>
 
@@ -10,8 +11,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ROUTE_PATHS } from '../constants/routes'
+import welcomeImage from '../assets/logo.svg'
+import { onMounted, ref } from 'vue'
 
 const router = useRouter()
+
+const userName = ref("")
+const storageKey = 'dino-game-settings'
 
 function goGamePage() {
   router.push(ROUTE_PATHS.GAME)
@@ -20,6 +26,31 @@ function goGamePage() {
 function goSettingsPage() {
   router.push(ROUTE_PATHS.SETTINGS)
 }
+
+function loadUserName(): string {
+  try {
+    const savedValue = localStorage.getItem(storageKey)
+
+    if (!savedValue) {
+      return ""
+    }
+
+    const parsed = JSON.parse(savedValue) as { playerName?: string }
+
+    if (parsed.playerName) {
+      return parsed.playerName
+    }
+
+    return ""
+  } catch {
+    return ""
+  }
+}
+
+onMounted (() => {
+  userName.value = loadUserName()
+})
+
 </script>
 
 <style scoped>
@@ -36,6 +67,13 @@ function goSettingsPage() {
 
 .home-page h1 {
   margin: 0 0 1rem;
+}
+
+.welcome-image {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 0.5rem;
+  object-fit: contain;
 }
 
 .home-page button {
